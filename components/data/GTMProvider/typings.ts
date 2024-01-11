@@ -4,6 +4,10 @@ export interface DataLayerItemProps {
   price?: NullableType<number>
   currency: NullableType<string>
   quantity: NullableType<number>
+
+  item_category?: NullableType<string>
+  item_brand?: NullableType<string>
+  discount?: NullableType<number>
 }
 
 export interface EcommerceProps {
@@ -16,6 +20,10 @@ export interface EcommerceProps {
   transaction_id?: NullableType<string | number>
   payment_type?: NullableType<string>
   tax?: NullableType<number>
+
+  order_id?: NullableType<string>
+  net_value?: NullableType<number>
+  discount_value?: NullableType<number>
 }
 
 export interface DataLayerProps {

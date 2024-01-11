@@ -6,3 +6,51 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@font-face {
+    font-family: 'Moderat';
+    font-display: swap;
+    font-weight: 300;
+    font-style: normal;
+    src: url('../public/fonts/moderat/Moderat-Light.woff2') format('woff2'),
+        url('../public/fonts/moderat/Moderat-Light.woff') format('woff'),
+        url('../public/fonts/moderat/Moderat-Light.eot'),
+        url('../public/fonts/moderat/Moderat-Light.eot?#iefix') format('embedded-opentype');
+}
+
+@font-face {
+    font-family: 'Moderat';
+    font-display: swap;
+    font-weight: 400;
+    font-style: normal;
+    src: url('../public/fonts/moderat/Moderat-Regular.woff2') format('woff2'),
+        url('../public/fonts/moderat/Moderat-Regular.woff') format('woff'),
+        url('../public/fonts/moderat/Moderat-Regular.eot'),
+        url('../public/fonts/moderat/Moderat-Regular.eot?#iefix') format('embedded-opentype');
+}
+
+@font-face {
+    font-family: 'Moderat';
+    font-display: swap;
+    font-weight: 500;
+    font-style: normal;
+    src: url('../public/fonts/moderat/Moderat-Medium.woff2') format('woff2'),
+        url('../public/fonts/moderat/Moderat-Medium.woff') format('woff'),
+        url('../public/fonts/moderat/Moderat-Medium.eot'),
+        url('../public/fonts/moderat/Moderat-Medium.eot?#iefix') format('embedded-opentype');
+}
+
+@font-face {
+    font-family: 'Moderat';
+    font-display: swap;
+    font-weight: 600;
+    font-style: normal;
+    src: url('../public/fonts/moderat/Moderat-Bold.woff2') format('woff2'),
+        url('../public/fonts/moderat/Moderat-Bold.woff') format('woff'),
+        url('../public/fonts/moderat/Moderat-Bold.eot'),
+        url('../public/fonts/moderat/Moderat-Bold.eot?#iefix') format('embedded-opentype');
+}
+
+html {
+    font-family: 'Moderat'!important;
+}

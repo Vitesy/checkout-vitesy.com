@@ -7,9 +7,11 @@
         "retry_error_description": "Prova a ricaricare la pagina",
         "invalid": "Quest'ordine non è accessibile.",
         "edit": "Modifica",
-        "free" : "Gratis",
+        "free": "Gratis",
         "apply": "Applica",
-        "privacy_and_terms": "Spuntando la casella accetti i <bold><termsUrl>termini</termsUrl></bold> e la <bold><privacyUrl>privacy</privacyUrl></bold>.",
+        "privacy_and_terms": "Procedendo con il pagamento accetto i <bold><termsUrl>termini e condizioni</termsUrl></bold> e la <bold><privacyUrl>privacy policy</privacyUrl></bold> di Laboratori Fabrici srl.",
+        "terms_description_B2C": "Ai sensi e per gli effetti del d.lgs. 6 settembre 2005 n. 206 (c.d. “Codice del Consumo“), il Cliente dichiara di aver preso visione delle <bold><termsUrl>Condizioni Generali di vendita</termsUrl></bold> e di aver specificatamente condiviso e accettato il contenuto delle seguenti clausole: 3.8; 8.3; 9.10; 10.14; 10.15; 10.16; 10.17.",
+        "terms_description_B2B": "Ai sensi e per gli effetti dell'art. 1341, comma 1 e 2, c.c., il Cliente Professionista dichiara di aver preso visione delle <bold><termsUrl>Condizioni Generali di vendita Business</termsUrl></bold> e di accettare espressamente quanto contenuto nelle seguenti clausole: 8.3 (“Mancato rispetto delle date di consegna”); 9.9 (“Responsabilità in caso di difetto del Prodotto”); 9.10 (“Responsabilità in caso di morte, lesioni e/o eventuali danni nei confronti del Cliente, famigliari, terzi”); 9.11 (“Responsabilità in caso di malfunzionamento con sistemi operativi smartphone e connettività”); 9.12 (“Responsabilità in caso di funzionamento con altro dispositivo e/o impianto di domotica”); 13.2. (“Foro competente”).",
         "checkoutTitle": "Checkout"
     },
 
@@ -18,11 +20,11 @@
         "shipments": "Alcune spedizioni mancano del metodo di spedizione",
         "paymentMethod": "Lo step del pagamento non può rimanere vuoto",
         "transition": "La transizione non è consentita",
-        "payer": "Non è stato approvato il pagamento",  
+        "payer": "Non è stato approvato il pagamento",
         "resourceID": "L'ID della risorsa richiesto non è stato trovato"
     },
 
-    "input":{
+    "input": {
         "cantBlank": "Non può essere vuoto",
         "mustBeValidFormat": "Deve essere un formato valido",
         "mustBeValidEmail": "Deve essere un indirizzo email valido",
@@ -71,7 +73,7 @@
         "title": "Cliente",
         "addNewAddress": "Aggiungi nuovo indirizzo",
         "saveAddressBook": "Salva l'indirizzo sulla tua rubrica",
-        "continueToDelivery": "Continuare alla consegna",
+        "continueToDelivery": "Vai alla consegna",
         "notSet": "Inserisci il tuo indirizzo di fatturazione/spedizione",
         "notSetNoDelivery": "Inserisci il tuo indirizzo di fatturazione",
         "closeForm": "Scegli indirizzo"
@@ -88,9 +90,9 @@
         "methodSelected": "Il tuo ordine contiene {{count}} spedizione",
         "methodSelected_other": "Il tuo ordine contiene {{count}} spedizioni",
         "methodUnselected": "Seleziona un metodo di spedizione",
-        "deliveryLeadTime" : "<0/> - <1/> giorni",
+        "deliveryLeadTime": "<0/> - <1/> giorni",
         "externalPrice": "Prezzo dopo la selezione",
-        "continueToPayment": "Continuare al pagamento",
+        "continueToPayment": "Vai al pagamento",
         "notRequired": "Questo ordine non necessita di spedizione"
     },
 
@@ -111,8 +113,8 @@
         "subscriptionWithCustomer": "Ciascun ordine periodico verrà addebitato sulla carta fornita, come indicato nelle condizioni di vendita."
     },
 
-    "addressForm" : {
-        "customer_email" : "La tua email",
+    "addressForm": {
+        "customer_email": "La tua email",
         "billing_address_title": "Indirizzo di fatturazione",
         "billing_address_first_name": "Nome",
         "billing_address_last_name": "Cognome",
@@ -125,7 +127,8 @@
         "billing_address_state_code_placeholder": "Seleziona una provincia",
         "billing_address_zip_code": "CAP",
         "billing_address_phone": "Telefono",
-        "billing_address_billing_info": "Informazioni di fatturazione",
+        "billing_address_company": "Azienda",
+        "billing_address_billing_info": "Partita IVA",
         "ship_to_different_address": "Spedisci ad un altro indirizzo",
         "shipping_address_title": "Indirizzo di spedizione",
         "shipping_address_first_name": "Nome",

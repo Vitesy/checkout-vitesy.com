@@ -9,10 +9,12 @@
         "edit": "Bearbeiten",
         "free": "Gratis",
         "apply": "Anwenden",
-        "privacy_and_terms": "Durch Anklicken des Kontrollkästchens erklärst Du Dich mit den <bold><termsUrl>Geschäftsbedingungen</termsUrl></bold> und dem <bold><privacyUrl>Datenschutz</privacyUrl></bold> einverstanden.",
+        "privacy_and_terms": "Mit der Zahlung akzeptiere ich die allgemeinen <bold><termsUrl>Geschäftsbedingungen</termsUrl></bold> und die <bold><privacyUrl>Datenschutzbestimmungen</privacyUrl></bold> von Laboratori Fabrici srl.",
+        "terms_description_B2C": "Gemäß und im Sinne des Gesetzesdekrets Nr. 206 vom 6. September 2005 (das so genannte “Verbrauchergesetzbuch“) erklärt der Kunde, dass er die <bold><termsUrl>Allgemeinen Verkaufsbedingungen</termsUrl></bold> (verfügbar in englischer und italienischer Sprache) gelesen hat und dass er ausdrücklich mit dem Inhalt der folgenden Klauseln einverstanden ist und diese akzeptiert: 3.8; 8.3; 9.10; 10.14; 10.15; 10.16; 10.17.",
+        "terms_description_B2B": "Gemäß und im Sinne von Artikel 1341(1) und (2) des Bürgerlichen Gesetzbuchs erklärt der professionelle Kunde, dass er die <bold><termsUrl>Allgemeinen Verkaufsbedingungen</termsUrl></bold> (verfügbar in englischer und italienischer Sprache) gelesen hat und ausdrücklich akzeptiert, was in den folgenden Klauseln enthalten ist: 8.3 (“Failure to comply with the delivery dates”); 9.9 (“Liability in case of defect of the Product”); 9.10 (“Liability in case of death, injury and/or any damage to the Customer, family members, third parties”); 9.11 (“Liability in case of malfunction with smartphone operating systems and connectivity”); 9.12. (“Liability in case of functioning with other device and/or home automation system”); 13.2. (“Jurisdiction”).",
         "checkoutTitle": "Bezahlung"
     },
-  
+
     "error": {
         "general": "Allgemeiner Fehler",
         "shipments": "Bei einigen Sendungen fehlt die Versandart.",
@@ -21,7 +23,7 @@
         "payer": "Die Zahlung wurde nicht genehmigt",
         "resourceID": "Die angeforderte Ressourcen-ID wurde nicht gefunden"
     },
-  
+
     "input": {
         "cantBlank": "Darf nicht leer sein",
         "mustBeValidFormat": "Muss ein gültiges Format sein",
@@ -30,7 +32,7 @@
         "mustBeValidCoupon": "Bitte gib einen gültigen Rabattcode an.",
         "mustBeValidGiftCard": "Bitte gib einen gültigen Geschenkgutschein an"
     },
-  
+
     "orderRecap": {
         "order_summary": "Bestellübersicht",
         "cartContains": "Dein Einkaufswagen enthält {{count}} Artikel.",
@@ -66,7 +68,7 @@
         "frequency.six-month": "Every six months",
         "frequency.yearly": "Yearly"
     },
-  
+
     "stepCustomer": {
         "title": "Adresse",
         "addNewAddress": "Neue Adresse hinzufügen",
@@ -76,7 +78,7 @@
         "notSetNoDelivery": "Gib Seine Rechnungsadresse ein",
         "closeForm": "Adresse auswählen"
     },
-  
+
     "stepShipping": {
         "title": "Versand",
         "shipment": "Versand <Wrap>{{current}} von {{total}}</Wrap>",
@@ -93,7 +95,7 @@
         "continueToPayment": "Weiter zur Zahlung",
         "notRequired": "Diese Bestellung erfordert keinen Versand"
     },
-  
+
     "stepPayment": {
         "title": "Zahlung",
         "methodUnselected": "Wähle eine Zahlungsmethode",
@@ -110,7 +112,7 @@
         "subscriptionWithoutCustomer": "An account must be created in order to purchase your subscription.",
         "subscriptionWithCustomer": "By providing your card information, you allow the company to charge your card for future payments in accordance with their terms."
     },
-  
+
     "addressForm": {
         "customer_email": "Deine E-Mail-Adresse",
         "billing_address_title": "Rechnungsadresse",
@@ -125,7 +127,8 @@
         "billing_address_state_code_placeholder": "Wähle ein Bundesland",
         "billing_address_zip_code": "Postleitzahl",
         "billing_address_phone": "Telefon",
-        "billing_address_billing_info": "Rechnungsinfo",
+        "billing_address_company": "Unternehmen",
+        "billing_address_billing_info": "Umsatzsteuer-Identifikationsnummer",
         "ship_to_different_address": "An eine andere Adresse liefern",
         "shipping_address_title": "Lieferadresse",
         "shipping_address_first_name": "Vorname",
@@ -140,7 +143,7 @@
         "shipping_address_zip_code": "Postleitzahl",
         "shipping_address_phone": "Telefon"
     },
-  
+
     "stepComplete": {
         "title": "Vielen Dank für deine Bestellung!",
         "description": "Bestellnummer: <WrapperOrderId>#{{orderNumber}}</WrapperOrderId>",
@@ -154,8 +157,7 @@
         "summary_title": "Zusammenfassung",
         "customer_title": "Kunde",
         "email": "E-Mail:",
-        "free_payment": "Diese Bestellung erforderte keine Zahlung"  
+        "free_payment": "Diese Bestellung erforderte keine Zahlung"
     }
 
-  }
-  
+}

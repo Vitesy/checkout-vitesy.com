@@ -63,6 +63,17 @@ export const GTMProvider: React.FC<GTMProviderProps> = ({
     }
   }
 
+  function productCategory(sku: string) {
+    if (sku) {
+      if (sku.includes("ET")) return "Eteria"
+      if (sku.includes("NT")) return "Natede"
+      if (sku.includes("SH")) return "Shelfy"
+      else return "Other"
+    } else {
+      return "Other"
+    }
+  }
+
   const mapItemsToGTM = ({
     name,
     currency_code,
@@ -70,13 +81,19 @@ export const GTMProvider: React.FC<GTMProviderProps> = ({
     bundle_code,
     quantity,
     total_amount_float,
+    discount_float,
   }: LineItem): DataLayerItemProps => {
+    const itemCategory = productCategory(sku_code || bundle_code || "")
+
     return {
       item_id: sku_code || bundle_code,
       item_name: name,
       price: total_amount_float,
       currency: currency_code,
       quantity,
+      item_category: itemCategory,
+      item_brand: "Vitesy",
+      discount: Math.abs(discount_float || 0) / (quantity || 1),
     }
   }
 
@@ -92,6 +109,7 @@ export const GTMProvider: React.FC<GTMProviderProps> = ({
         currency: order?.currency_code,
         items: lineItems?.map(mapItemsToGTM),
         value: order?.total_amount_with_taxes_float,
+        order_id: order?.id,
       },
     })
   }
@@ -112,8 +130,10 @@ export const GTMProvider: React.FC<GTMProviderProps> = ({
           coupon: order?.coupon_code,
           currency: order?.currency_code,
           items: lineItems,
-          value: shipment.shipping_method?.price_amount_for_shipment_float,
+          // value: shipment.shipping_method?.price_amount_for_shipment_float,
+          value: order?.total_amount_with_taxes_float,
           shipping_tier: shipment.shipping_method?.name,
+          order_id: order?.id,
         },
       })
     })
@@ -132,8 +152,10 @@ export const GTMProvider: React.FC<GTMProviderProps> = ({
         coupon: order?.coupon_code,
         currency: order?.currency_code,
         items: lineItems?.map(mapItemsToGTM),
-        value: paymentMethod?.price_amount_float,
+        // value: paymentMethod?.price_amount_float,
+        value: order?.total_amount_with_taxes_float,
         payment_type: paymentMethod?.name,
+        order_id: order?.id,
       },
     })
   }
@@ -142,6 +164,8 @@ export const GTMProvider: React.FC<GTMProviderProps> = ({
     const lineItems = order?.line_items?.filter((line_item) => {
       return LINE_ITEMS_SHOPPABLE.includes(line_item.item_type as TypeAccepted)
     })
+
+    const paymentMethod = order?.payment_method
 
     return pushDataLayer({
       eventName: "purchase",
@@ -153,6 +177,14 @@ export const GTMProvider: React.FC<GTMProviderProps> = ({
         shipping: order?.shipping_amount_float,
         value: order?.total_amount_with_taxes_float,
         tax: order?.total_tax_amount_float,
+        order_id: order?.id,
+        net_value:
+          order?.total_amount_with_taxes_float ||
+          0 -
+            ((order?.total_tax_amount_float || 0) +
+              (order?.shipping_amount_float || 0)),
+        discount_value: Math.abs(order?.discount_amount_float || 0),
+        payment_type: paymentMethod?.name,
       },
     })
   }

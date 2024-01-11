@@ -47,6 +47,7 @@ const StepPlaceOrder: React.FC<Props> = ({
   }
 
   const { placeOrder } = appCtx
+  const { requiresBillingInfo } = appCtx
 
   const handlePlaceOrder = async ({
     placed,
@@ -148,6 +149,24 @@ const StepPlaceOrder: React.FC<Props> = ({
                   ),
                 }}
               />
+              <div className="mt-2 text-xs">
+                <Trans
+                  i18nKey={
+                    requiresBillingInfo
+                      ? "general.terms_description_B2B"
+                      : "general.terms_description_B2C"
+                  }
+                  components={{
+                    bold: <strong />,
+                    termsUrl: (
+                      <a href={termsUrl} target="_blank" rel="noreferrer" />
+                    ),
+                    privacyUrl: (
+                      <a href={privacyUrl} target="_blank" rel="noreferrer" />
+                    ),
+                  }}
+                />
+              </div>
             </Label>
           </FlexContainer>
         )}

@@ -1,5 +1,4 @@
 {
-    
     "general": {
         "title": "{{companyName}} - Checkout",
         "systemError": "We're sorry but something went wrong!",
@@ -7,9 +6,11 @@
         "retry_error_description": "Try to reload the page",
         "invalid": "This order is not accessible.",
         "edit": "Edit",
-        "free" : "Free",
+        "free": "Free",
         "apply": "Apply",
-        "privacy_and_terms": "By clicking the checkbox you agree to <bold><termsUrl>terms</termsUrl></bold> and <bold><privacyUrl>privacy</privacyUrl></bold>.",
+        "privacy_and_terms": "By proceeding with the payment, I accept the <bold><termsUrl>terms and conditions</termsUrl></bold> and <bold><privacyUrl>privacy policy</privacyUrl></bold> of Laboratori Fabrici srl.",
+        "terms_description_B2C": "According to Legislative Decree 6th September 2005 n. 206 (the “Italian Consumer Code”), the Customer declares to know the <bold><termsUrl>Terms and Conditions of Sales</termsUrl></bold> and to have expressly approved and accepted what is provided in the following clauses: 3.8; 8.5; 9.10; 10.14; 10.15, 10.16; 10.17.",
+        "terms_description_B2B": "According to art. 1341, par. 1 and 2 of the Italian Civil Code, the Professional Customer declares to know the <bold><termsUrl>Terms and Conditions of Sales to Businesses</termsUrl></bold> and to accept expressly what is provided in the following clauses: 8.3 (“Failure to comply with the delivery dates”); 9.9 (“Liability in case of defect of the Product”); 9.10 (“Liability in case of death, injury and/or any damage to the Customer, family members, third parties”); 9.11 (“Liability in case of malfunction with smartphone operating systems and connectivity”); 9.12. (“Liability in case of functioning with other device and/or home automation system”); 13.2. (“Jurisdiction”).",
         "checkoutTitle": "Checkout"
     },
 
@@ -22,7 +23,7 @@
         "resourceID": "The requested resource ID was not found"
     },
 
-    "input":{
+    "input": {
         "cantBlank": "Can't be blank",
         "mustBeValidFormat": "Must be valid format",
         "mustBeValidEmail": "Please enter a valid email",
@@ -88,7 +89,7 @@
         "methodSelected": "Your order contains {{count}} shipment",
         "methodSelected_other": "Your order contains {{count}} shipments",
         "methodUnselected": "Select a shipping method",
-        "deliveryLeadTime" : "<0/> - <1/> days",
+        "deliveryLeadTime": "<0/> - <1/> days",
         "externalPrice": "At next step",
         "continueToPayment": "Continue to payment",
         "notRequired": "This order does not require shipping"
@@ -111,8 +112,8 @@
         "subscriptionWithCustomer": "By providing your card information, you allow the company to charge your card for future payments in accordance with their terms."
     },
 
-    "addressForm" : {
-        "customer_email" : "Your email address",
+    "addressForm": {
+        "customer_email": "Your email address",
         "billing_address_title": "Billing Address",
         "billing_address_first_name": "First name",
         "billing_address_last_name": "Last name",
@@ -125,7 +126,8 @@
         "billing_address_state_code_placeholder": "Select a province/state",
         "billing_address_zip_code": "Zip Code",
         "billing_address_phone": "Phone",
-        "billing_address_billing_info": "Billing info",
+        "billing_address_company": "Company",
+        "billing_address_billing_info": "VAT Number",
         "ship_to_different_address": "Ship to different address",
         "shipping_address_title": "Shipping Address",
         "shipping_address_first_name": "First name",

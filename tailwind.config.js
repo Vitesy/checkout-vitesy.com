@@ -54,7 +54,7 @@ module.exports = {
       },
     },
     fontFamily: {
-      sans: ["Manrope", "ui-sans-serif", "sans-serif"],
+      sans: ["Moderat", "sans-serif"],
     },
     borderColor: (theme) => ({
       ...theme("colors"),
