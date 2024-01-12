@@ -13,21 +13,41 @@ const STREET_NUMBER_BEFORE_COUNTRIES = [
   "FI",
 ]
 
-const setupAutocomplete = (inputId, handlePlaceChanged) => {
+interface AutocompleteAddress {
+  line_1: string
+  line_2: string
+  city: string
+  country_code: string
+  state_code: string
+  zip_code: string
+}
+
+const setupAutocomplete = (
+  inputId: string,
+  handlePlaceChanged: (address: AutocompleteAddress) => void
+) => {
   const loader = new Loader({
-    apiKey: process.env.NEXT_PUBLIC_GOOGLE_API_KEY,
+    apiKey: process.env.NEXT_PUBLIC_GOOGLE_API_KEY || "",
     libraries: ["places"],
   })
 
   loader.load().then(() => {
-    const input = document.getElementById(inputId)
+    const input = document.getElementById(inputId) as HTMLInputElement
     if (input) {
       const autocomplete = new google.maps.places.Autocomplete(input)
       autocomplete.addListener("place_changed", () => {
         const selectedPlace = autocomplete.getPlace()
         if (selectedPlace) {
           const addressComponents = selectedPlace.address_components || []
-          const newAutocompleteAddress = {}
+
+          const newAutocompleteAddress: AutocompleteAddress = {
+            line_1: "",
+            line_2: "",
+            city: "",
+            country_code: "",
+            state_code: "",
+            zip_code: "",
+          }
 
           const countryComponent = addressComponents.find((component) =>
             component.types.includes("country")

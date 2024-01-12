@@ -42,6 +42,9 @@ dependencies:
   '@types/async-retry':
     specifier: 1.4.8
     version: 1.4.8
+  '@types/google.maps':
+    specifier: ^3.54.10
+    version: 3.54.10
   '@types/jsonwebtoken':
     specifier: ^9.0.5
     version: 9.0.5
@@ -1387,6 +1390,10 @@ packages:
     resolution: {integrity: sha512-Qup/B5PWLe86yI5I3av6ePGaeQrIHNKCwbsQotD6aHQ6YkHsMUxVZkZsmx/Ry3VZQ6uysHwTjQ7666+k6UjVJA==}
     dependencies:
       '@types/retry': 0.12.2
+    dev: false
+
+  /@types/google.maps@3.54.10:
+    resolution: {integrity: sha512-N6gwM01mKhooXaw+IKbUH7wJcIJCn8U60VoaVvom5EiQjmfgevhQ+0+/r17beXW5j8ad2x+WPr0iyOUodCw4/w==}
     dev: false
 
   /@types/googlepay@0.7.2:
