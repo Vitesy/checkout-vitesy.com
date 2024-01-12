@@ -23,12 +23,15 @@ export const ShippingAddressFormNew: React.FC<Props> = ({
   })
 
   useEffect(() => {
-    setupAutocomplete("shipping_address_line_1", (selectedPlace) => {
-      setAutocompleteAddress({
-        ...autocompleteAddress,
-        ...selectedPlace,
-      })
-    })
+    setupAutocomplete(
+      "shipping_address_line_1",
+      (selectedPlace: Partial<typeof autocompleteAddress> = {}) => {
+        setAutocompleteAddress({
+          ...autocompleteAddress,
+          ...selectedPlace,
+        })
+      }
+    )
   }, [])
 
   return (

@@ -33,12 +33,15 @@ export const BillingAddressFormNew: React.FC<Props> = ({
   })
 
   useEffect(() => {
-    setupAutocomplete("billing_address_line_1", (selectedPlace) => {
-      setAutocompleteAddress({
-        ...autocompleteAddress,
-        ...selectedPlace,
-      })
-    })
+    setupAutocomplete(
+      "billing_address_line_1",
+      (selectedPlace: Partial<typeof autocompleteAddress> = {}) => {
+        setAutocompleteAddress({
+          ...autocompleteAddress,
+          ...selectedPlace,
+        })
+      }
+    )
   }, [])
 
   const { requiresBillingInfo } = appCtx
