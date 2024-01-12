@@ -1,12 +1,12 @@
 import { Address } from "@commercelayer/sdk"
-import { Loader } from "@googlemaps/js-api-loader"
-import { useContext, useState } from "react"
+import { useContext, useEffect, useState } from "react"
 import styled from "styled-components"
 import tw from "twin.macro"
 
 import { ShippingToggleProps } from "components/composite/StepCustomer"
 import { AddressInputGroup } from "components/composite/StepCustomer/AddressInputGroup"
 import { AppContext } from "components/data/AppProvider"
+import setupAutocomplete from "components/utils/addressAutocomplete"
 
 interface Props {
   billingAddress: NullableType<Address>
@@ -30,85 +30,16 @@ export const BillingAddressFormNew: React.FC<Props> = ({
     country_code: billingAddress?.country_code || "",
     state_code: billingAddress?.state_code || "",
     zip_code: billingAddress?.zip_code || "",
-    // line_1: "",
-    // line_2: "",
-    // city: "",
-    // country_code: "",
-    // state_code: "",
-    // zip_code: "",
   })
 
-  const loader = new Loader({
-    apiKey: "AIzaSyCGyK40kmxyQsrl_QcwrvptKj5bb5J1Q6U",
-    libraries: ["places"],
-  })
-  loader.load().then(() => {
-    const input = document.getElementById("billing_address_line_1")
-
-    if (input) {
-      const autocomplete = new google.maps.places.Autocomplete(input)
-
-      autocomplete.addListener("place_changed", () => {
-        const selectedPlace = autocomplete.getPlace()
-        const addressComponents = selectedPlace.address_components || []
-
-        if (selectedPlace) {
-          const newAutocompleteAddress: Partial<typeof autocompleteAddress> = {}
-
-          const countryComponent = addressComponents.find((component) =>
-            component.types.includes("country")
-          )
-          const selectedCountryCode = countryComponent?.short_name || ""
-
-          addressComponents.forEach((component) => {
-            switch (component.types[0]) {
-              case "street_number":
-                newAutocompleteAddress.line_1 =
-                  (newAutocompleteAddress.line_1 || "") +
-                  component.long_name +
-                  " "
-                break
-              case "route":
-                newAutocompleteAddress.line_1 =
-                  (newAutocompleteAddress.line_1 || "") + component.long_name
-                break
-              case "locality":
-                newAutocompleteAddress.city = component.long_name
-                break
-              case "country":
-                newAutocompleteAddress.country_code = component.short_name
-                break
-              case "administrative_area_level_1":
-                if (selectedCountryCode !== "IT") {
-                  newAutocompleteAddress.state_code = component.short_name
-                }
-                break
-              case "administrative_area_level_2":
-                if (selectedCountryCode === "IT") {
-                  newAutocompleteAddress.state_code = component.short_name
-                }
-                break
-              case "postal_code":
-                newAutocompleteAddress.zip_code = component.long_name
-                break
-              default:
-                break
-            }
-          })
-
-          setAutocompleteAddress({
-            ...autocompleteAddress,
-            ...newAutocompleteAddress,
-          })
-
-          console.log(selectedPlace)
-          console.log(newAutocompleteAddress)
-          // console.log("billingAddress", billingAddress)
-          // console.log("autocompleteAddress", autocompleteAddress)
-        }
+  useEffect(() => {
+    setupAutocomplete("billing_address_line_1", (selectedPlace) => {
+      setAutocompleteAddress({
+        ...autocompleteAddress,
+        ...selectedPlace,
       })
-    }
-  })
+    })
+  }, [])
 
   const { requiresBillingInfo } = appCtx
 
