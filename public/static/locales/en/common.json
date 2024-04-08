@@ -156,7 +156,15 @@
         "summary_title": "Summary",
         "customer_title": "Customer",
         "email": "E-mail:",
-        "free_payment": "This order did not require a payment"
+        "free_payment": "This order did not require a payment",
+        "referral": {
+            "title": "Join our Referral Program",
+            "description": "Sign up to get your personal 20€ discount code to share with your friends.",
+            "content": "By recommending Shelfy, <strong>you receive 20€ for every purchase</strong> made with your referral code!<br>Join our mission in fighting food waste.",
+            "image": "https://images.prismic.io/vitesy/ZhPOqBrFxhpPBXf9_referral-eng.png?auto=format,compress",
+            "cta": "Sign Up Now",
+            "cta_url": "https://vitesy.com/referral?utm_campaign=referral-program&utm_source=checkout&utm_medium=organic&utm_content=banner"
+        }
     }
 
 }

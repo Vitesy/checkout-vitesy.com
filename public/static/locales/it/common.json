@@ -157,7 +157,15 @@
         "summary_title": "Riepilogo",
         "customer_title": "Cliente",
         "email": "E-mail:",
-        "free_payment": "Questo ordine non richiede un pagamento"
+        "free_payment": "Questo ordine non richiede un pagamento",
+        "referral": {
+            "title": "Unisciti al nostro programma referral",
+            "description": "Iscriviti per ottenere il tuo codice sconto personale di 20€ da condividere con i tuoi amici.",
+            "content": "Consigliando Shelfy, <strong>ricevi 20€ per ogni acquisto</strong> effettuato con il tuo codice referral!<br>Unisciti alla nostra lotta allo spreco alimentare.",
+            "image": "https://images.prismic.io/vitesy/ZhPOqRrFxhpPBXf-_referral-ita.png?auto=format,compress",
+            "cta": "Registrati ora",
+            "cta_url": "https://vitesy.com/it/referral?utm_campaign=referral-program&utm_source=checkout&utm_medium=organic&utm_content=banner"
+        }
     }
 
 }

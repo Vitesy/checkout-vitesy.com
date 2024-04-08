@@ -10,6 +10,7 @@ import { PaymentContainer } from "components/composite/StepPayment/PaymentContai
 import { AppContext } from "components/data/AppProvider"
 import { Base } from "components/ui/Base"
 import { Button } from "components/ui/Button"
+import { Card } from "components/ui/Card"
 import { CustomAddress } from "components/ui/CustomerAddressCard"
 import { FlexContainer } from "components/ui/FlexContainer"
 import { Footer } from "components/ui/Footer"
@@ -106,6 +107,45 @@ export const StepComplete: React.FC<Props> = ({
                 {""}
               </WrapperButton>
             )}
+            <Card
+              rounded={true}
+              className="my-4 text-left shadow-lg !p-7 bg-gradient-to-b from-green-100 to-white max-w-[550px]"
+            >
+              <Title
+                className="!text-3xl lg:!text-4xl !text-green-400"
+                dangerouslySetInnerHTML={{
+                  __html: t("stepComplete.referral.title"),
+                }}
+              ></Title>
+              <img
+                src={t("stepComplete.referral.image")}
+                alt={t("stepComplete.referral.title")}
+                className="my-4"
+              />
+              <Text className="font-bold">
+                {t("stepComplete.referral.description")}
+              </Text>
+              <Text
+                dangerouslySetInnerHTML={{
+                  __html: t("stepComplete.referral.content"),
+                }}
+              ></Text>
+              <a
+                className="block px-4 py-2 mt-4 text-center text-white bg-green-400 rounded"
+                href={t("stepComplete.referral.cta_url")}
+                target="_blank"
+                rel="noreferrer"
+              >
+                {t("stepComplete.referral.cta")}
+              </a>
+              {/* <LinkButton
+                data-testid={`referral-banner`}
+                label={t("stepComplete.referral.cta")}
+                onClick={() => {
+                  window.open(t("stepComplete.referral.cta_url"), "_blank")
+                }}
+              /> */}
+            </Card>
           </Main>
         </Wrapper>
       </Top>
