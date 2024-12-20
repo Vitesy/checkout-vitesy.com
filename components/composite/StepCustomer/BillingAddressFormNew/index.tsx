@@ -21,9 +21,12 @@ export const BillingAddressFormNew: React.FC<Props> = ({
   const appCtx = useContext(AppContext)
   const { settings } = useSettingsOrInvalid()
 
-  if (!appCtx || !settings) {
+  if (!appCtx) {
     return null
   }
+  // if (!appCtx || !settings) {
+  //   return null
+  // }
 
   const [autocompleteAddress, setAutocompleteAddress] = useState({
     line_1: billingAddress?.line_1 || "",
