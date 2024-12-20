@@ -111,6 +111,7 @@ export const BillingAddressFormNew: React.FC<Props> = ({
           fieldName="billing_address_country_code"
           resource="billing_address"
           type="text"
+          // @ts-expect-error missing type
           countries={countries}
           defaultCountry={defaultCountry}
           openShippingAddress={openShippingAddress}
@@ -121,6 +122,7 @@ export const BillingAddressFormNew: React.FC<Props> = ({
         <AddressInputGroup
           fieldName="billing_address_state_code"
           resource="billing_address"
+          // @ts-expect-error missing type
           states={states}
           type="text"
           value={autocompleteAddress?.state_code || ""}

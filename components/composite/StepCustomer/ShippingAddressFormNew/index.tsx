@@ -88,6 +88,7 @@ export const ShippingAddressFormNew: React.FC<Props> = ({
         <AddressInputGroup
           fieldName="shipping_address_country_code"
           resource="shipping_address"
+          // @ts-expect-error missing type
           countries={countries}
           defaultCountry={defaultCountry}
           type="text"
@@ -99,6 +100,7 @@ export const ShippingAddressFormNew: React.FC<Props> = ({
         <AddressInputGroup
           fieldName="shipping_address_state_code"
           resource="shipping_address"
+          // @ts-expect-error missing type
           states={states}
           type="text"
           value={autocompleteAddress?.state_code || ""}
