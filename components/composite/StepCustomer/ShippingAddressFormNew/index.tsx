@@ -4,8 +4,8 @@ import styled from "styled-components"
 import tw from "twin.macro"
 
 import { AddressInputGroup } from "components/composite/StepCustomer/AddressInputGroup"
-import setupAutocomplete from "components/utils/addressAutocomplete"
 import { useSettingsOrInvalid } from "components/hooks/useSettingsOrInvalid"
+import setupAutocomplete from "components/utils/addressAutocomplete"
 
 interface Props {
   shippingAddress: NullableType<Address>

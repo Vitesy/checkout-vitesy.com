@@ -6,8 +6,8 @@ import tw from "twin.macro"
 import { ShippingToggleProps } from "components/composite/StepCustomer"
 import { AddressInputGroup } from "components/composite/StepCustomer/AddressInputGroup"
 import { AppContext } from "components/data/AppProvider"
-import setupAutocomplete from "components/utils/addressAutocomplete"
 import { useSettingsOrInvalid } from "components/hooks/useSettingsOrInvalid"
+import setupAutocomplete from "components/utils/addressAutocomplete"
 
 interface Props {
   billingAddress: NullableType<Address>
