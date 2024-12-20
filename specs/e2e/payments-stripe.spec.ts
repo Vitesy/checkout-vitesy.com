@@ -38,11 +38,11 @@ test.describe("customer with Stripe without saving", () => {
 
     await checkoutPage.selectPayment("stripe")
 
-    const element = await checkoutPage.page.locator(
+    const element = checkoutPage.page.locator(
       "[data-testid=payment-save-wallet]"
     )
-    expect(element).toBeVisible()
-    expect(element).not.toBeChecked()
+    await expect(element).toBeVisible()
+    await expect(element).not.toBeChecked()
 
     await checkoutPage.setPayment("stripe")
 
@@ -90,16 +90,14 @@ test.describe("customer with Stripe with saving", () => {
 
     await checkoutPage.checkPaymentSummary("€10,00")
 
-    let element = await checkoutPage.page.locator(
-      "[data-testid=payment-save-wallet]"
-    )
-    expect(element).toBeVisible()
-    expect(element).not.toBeChecked()
-    await element.check()
-    element = await checkoutPage.page.locator(
-      "[data-testid=payment-save-wallet]"
-    )
-    expect(element).toBeChecked()
+    let element = checkoutPage.page.locator("[data-testid=payment-save-wallet]")
+    await expect(element).toBeVisible()
+    await expect(element).not.toBeChecked()
+    await checkoutPage.page.waitForTimeout(2000)
+    await element.check({ force: true })
+
+    element = checkoutPage.page.locator("[data-testid=payment-save-wallet]")
+    await expect(element).toBeChecked()
 
     await checkoutPage.save("Payment")
   })
@@ -187,10 +185,10 @@ test.describe("guest with Stripe", () => {
 
     await checkoutPage.setPayment("stripe")
 
-    const element = await checkoutPage.page.locator(
+    const element = checkoutPage.page.locator(
       "[data-testid=payment-save-wallet]"
     )
-    expect(element).not.toBeVisible()
+    await expect(element).not.toBeVisible()
 
     await checkoutPage.setPayment("stripe")
 
@@ -273,16 +271,16 @@ test.describe("guest with Stripe", () => {
       cvc: "123",
     })
 
-    const element = await checkoutPage.page.locator(
+    const element = checkoutPage.page.locator(
       "[data-testid=payment-save-wallet]"
     )
-    expect(element).not.toBeVisible()
+    await expect(element).not.toBeVisible()
 
     await checkoutPage.checkPaymentSummary("€10,00")
 
     await checkoutPage.save("Payment", undefined, true)
 
-    await checkoutPage.page.waitForTimeout(10000)
+    await checkoutPage.page.waitForTimeout(6000)
 
     const myFrames = checkoutPage.page.frames()
 
@@ -290,7 +288,7 @@ test.describe("guest with Stripe", () => {
       .locator("#test-source-authorize-3ds")
       .click()
 
-    await checkoutPage.checkPaymentRecap("Visa ending in 3155")
+    await checkoutPage.checkPaymentRecap("Visa ending in 3155", 10000)
 
     await checkoutPage.page.reload()
 

@@ -100,8 +100,7 @@ function isNewAddress({
 
   const hasAddressIntoAddresses = Boolean(
     customerAddresses?.find(
-      (customerAddress) =>
-        customerAddress?.address?.reference === address?.reference
+      (customerAddress) => customerAddress?.id === address?.reference
     )
   )
 
@@ -154,10 +153,10 @@ export async function checkAndSetDefaultAddressForOrder({
 
   // Set reference on original address if not present
   // doing this we can lookup the cloned address for the same entity
-  if (address.id && address.reference !== address.id) {
+  if (address.id && address.reference !== customerAddresses[0].id) {
     await cl.addresses.update({
       id: address.id,
-      reference: address.id,
+      reference: customerAddresses[0].id,
     })
   }
 
@@ -186,7 +185,7 @@ export async function checkAndSetDefaultAddressForOrder({
       customerAddresses: [
         {
           ...customerAddresses[0],
-          address: { ...address, reference: address.id },
+          address: { ...address, reference: customerAddresses[0].id },
         },
       ],
       hasSameAddresses: true,
@@ -257,6 +256,7 @@ export const fetchOrder = (cl: CommerceLayerClient, orderId: string) => {
         "requires_billing_info",
         "total_amount_with_taxes_float",
         "language_code",
+        "subscription_created_at",
         "shipping_address",
         "billing_address",
         "shipments",
@@ -266,7 +266,7 @@ export const fetchOrder = (cl: CommerceLayerClient, orderId: string) => {
         "line_items",
       ],
       shipments: ["shipping_method", "available_shipping_methods"],
-      customer: ["customer_addresses"],
+      customers: ["customer_addresses"],
       customer_addresses: ["address"],
       line_items: ["frequency"],
     },
@@ -367,13 +367,11 @@ export function checkPaymentMethod(order: Order) {
 
   const paymentSource: PaymentSourceType | undefined =
     order.payment_source as PaymentSourceType
-
   let hasPaymentMethod = Boolean(
-    paymentSource?.metadata?.card ||
-      paymentSource?.options?.card ||
+    // @ts-expect-error no type for payment_method
+    paymentSource?.payment_method?.lenght > 0 ||
       paymentSource?.payment_response?.source
   )
-
   const paymentRequired = isPaymentRequired(order)
   if (!hasPaymentMethod && !paymentRequired) {
     hasPaymentMethod = true

@@ -38,6 +38,8 @@ test.describe("guest with Adyen", () => {
     await checkoutPage.save("Payment")
 
     await checkoutPage.checkPaymentRecap(" ending in ****")
+    await checkoutPage.page.reload()
+
     await checkoutPage.checkPaymentRecap(" ending in ****")
   })
 
@@ -63,6 +65,8 @@ test.describe("guest with Adyen", () => {
     await checkoutPage.save("Payment")
 
     await checkoutPage.checkPaymentRecap(" ending in ****")
+    await checkoutPage.page.reload()
+
     await checkoutPage.checkPaymentRecap(" ending in ****")
   })
 
@@ -223,7 +227,7 @@ test.describe("customer with Adyen without saving", () => {
 
     await checkoutPage.selectPayment("adyen")
 
-    const element = await checkoutPage.page.getByTestId("payment-save-wallet")
+    const element = checkoutPage.page.getByTestId("payment-save-wallet")
     expect(element).toBeVisible()
     expect(element).not.toBeChecked()
 
@@ -272,11 +276,11 @@ test.describe("customer with Adyen with saving", () => {
 
     await checkoutPage.setPayment("adyen")
 
-    let element = await checkoutPage.page.getByTestId("payment-save-wallet")
+    let element = checkoutPage.page.getByTestId("payment-save-wallet")
     expect(element).toBeVisible()
     expect(element).not.toBeChecked()
     await element.check()
-    element = await checkoutPage.page.getByTestId("payment-save-wallet")
+    element = checkoutPage.page.getByTestId("payment-save-wallet")
     expect(element).toBeChecked()
 
     await checkoutPage.save("Payment")
@@ -295,5 +299,82 @@ test.describe("customer with Adyen with saving", () => {
     await checkoutPage.useCustomerCard()
 
     await checkoutPage.save("Payment")
+  })
+
+  test("Checkout order with customer wallet and reload when card selected", async ({
+    checkoutPage,
+  }) => {
+    await checkoutPage.checkOrderSummary("Order Summary")
+
+    await checkoutPage.checkStep("Shipping", "open")
+
+    await checkoutPage.selectShippingMethod({ text: "Standard Shipping" })
+
+    await checkoutPage.save("Shipping")
+    await checkoutPage.selectPayment("adyen")
+
+    await checkoutPage.useCustomerCard()
+
+    await checkoutPage.page.reload()
+
+    await checkoutPage.page.waitForTimeout(2000)
+
+    const element = checkoutPage.page.getByTestId("payment-save-wallet")
+    expect(element).not.toBeVisible()
+    await checkoutPage.checkStep("Payment", "open")
+
+    await checkoutPage.save("Payment")
+
+    await checkoutPage.checkPaymentRecap(" ending in ****")
+    await checkoutPage.page.reload()
+    await checkoutPage.checkPaymentRecap(" ending in ****")
+  })
+})
+
+test.describe("API version v68", () => {
+  const customerEmail = faker.internet.email().toLocaleLowerCase()
+
+  test.use({
+    defaultParams: {
+      order: "with-items",
+      market: "MI",
+      lineItemsAttributes: [
+        { sku_code: "TSHIRTMMFFFFFFE63E74MXXX", quantity: 1 },
+      ],
+      orderAttributes: {
+        customer_email: customerEmail,
+      },
+    },
+  })
+
+  test("checkout with credit card", async ({ checkoutPage }) => {
+
+    const TIMEOUT = 3000;
+    await checkoutPage.checkOrderSummary("Order Summary")
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { billing_info, ...address } = euAddress
+    await checkoutPage.setBillingAddress(address)
+    await checkoutPage.save("Customer")
+
+    await checkoutPage.checkStep("Shipping", "open")
+    await checkoutPage.selectShippingMethod({ text: "Standard Shipping" })
+    await checkoutPage.page.waitForTimeout(TIMEOUT)
+    await checkoutPage.checkShippingSummary("Free")
+    await checkoutPage.save("Shipping")
+    await checkoutPage.checkStep("Shipping", "close")
+    await checkoutPage.checkStep("Payment", "open")
+
+
+    await checkoutPage.selectPayment("adyen")
+
+    await checkoutPage.setPayment("adyen")
+
+    await checkoutPage.save("Payment")
+
+    await checkoutPage.checkPaymentRecap(" ending in ****")
+    await checkoutPage.page.reload()
+    await checkoutPage.checkPaymentRecap(" ending in ****")
+    
   })
 })

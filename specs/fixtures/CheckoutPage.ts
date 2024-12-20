@@ -17,6 +17,8 @@ interface DataLayerWindowProps {
 
 interface AttributesProps {
   giftCard: NullableType<string>
+  orderId: NullableType<string>
+  accessToken: NullableType<string>
   organization: NullableType<object>
 }
 
@@ -39,7 +41,7 @@ export class CheckoutPage {
       // // Add a prefix to the title.
       const body = {
         data: {
-          id: process.env.E2E_ORGANIZATION_ID as string,
+          id: "organization-id",
           type: "organizations",
           attributes: {
             name: process.env.NEXT_PUBLIC_SLUG as string,
@@ -65,6 +67,7 @@ export class CheckoutPage {
             reference: null,
             reference_origin: null,
             metadata: {},
+            config: null,
           },
         },
       }
@@ -92,6 +95,14 @@ export class CheckoutPage {
 
   getGiftCard() {
     return this.attributes?.giftCard
+  }
+
+  getOrderId() {
+    return this.attributes?.orderId
+  }
+
+  getAccessToken() {
+    return this.attributes?.accessToken
   }
 
   async setCustomerMail(email?: string) {
@@ -149,20 +160,23 @@ export class CheckoutPage {
     )
   }
 
-  clickStep(step: SingleStepEnum) {
-    this.page.click(`[data-testid=step_${step.toLocaleLowerCase()}]`, {
+  async clickStep(step: SingleStepEnum) {
+    await this.page.click(`[data-testid=step_${step.toLocaleLowerCase()}]`, {
       force: true,
     })
   }
 
-  clickAccordion(step: SingleStepEnum) {
-    this.page.click(`[data-testid=accordion_${step.toLocaleLowerCase()}]`, {
-      force: true,
-    })
+  async clickAccordion(step: SingleStepEnum) {
+    await this.page.click(
+      `[data-testid=accordion_${step.toLocaleLowerCase()}]`,
+      {
+        force: true,
+      }
+    )
   }
 
-  shipToDifferentAddress() {
-    this.page.click(`[data-testid=button-ship-to-different-address]`)
+  async shipToDifferentAddress() {
+    await this.page.click(`[data-testid=button-ship-to-different-address]`)
   }
 
   async getDataLayer(
@@ -269,12 +283,46 @@ export class CheckoutPage {
 
   async selectCountry(
     type: "billing_address" | "shipping_address",
-    country: "IT" | "US" | "GB" | "FR"
+    country: "IT" | "US" | "GB" | "FR" | "ES"
   ) {
     await this.page.selectOption(
       `[data-testid=input_${type}_country_code]`,
       country
     )
+  }
+
+  async getSelectOptions({
+    type,
+    field,
+  }: {
+    type: "billing_address" | "shipping_address"
+    field: "country_code" | "state_code"
+  }) {
+    const selectElement = await this.page.$(
+      `[data-testid=input_${type}_${field}]`
+    )
+
+    if (selectElement != null) {
+      const options = await selectElement.$$("option")
+
+      const countries = []
+
+      for (const option of options) {
+        countries.push(option.getAttribute("value"))
+      }
+      return Promise.all(countries)
+    }
+  }
+
+  async getSelectedOption({
+    type,
+    field,
+  }: {
+    type: "billing_address" | "shipping_address"
+    field: "country_code" | "state_code"
+  }) {
+    const value = this.page.getByTestId(`input_${type}_${field}`)
+    return await value.inputValue()
   }
 
   async selectState(
@@ -331,9 +379,9 @@ export class CheckoutPage {
       `[data-testid=shipments-container] >> nth=${shipment} >> [data-testid=shipping-methods-container] >> nth=${index} >> input[type=radio]`
     )
     if (value) {
-      await expect(element).toBeTruthy()
+      expect(element).toBeTruthy()
     } else {
-      await expect(element).toBeFalsy()
+      expect(element).toBeFalsy()
     }
   }
 
@@ -376,10 +424,11 @@ export class CheckoutPage {
       )
     }
 
-    const command =
-      address.country_code && ["IT", "US"].includes(address.country_code)
-        ? "selectOption"
-        : "fill"
+    const stateInput = this.page
+      .getByTestId(`input_${type}_state_code`)
+      .and(this.page.locator("select"))
+
+    const command = (await stateInput.isVisible()) ? "selectOption" : "fill"
 
     await this.page[command](
       `[data-testid=input_${type}_state_code]`,
@@ -428,6 +477,7 @@ export class CheckoutPage {
         key === "country_code" ||
         (key === "state_code" &&
           address.country_code &&
+          // TODO Adjust to check for select or input
           ["IT", "US"].includes(address.country_code))
           ? "select"
           : "input"
@@ -439,12 +489,12 @@ export class CheckoutPage {
     await Promise.all(promises)
   }
 
-  openNewAddress(type: "shipping" | "billing") {
-    this.page.click(`[data-testid=add_new_${type}_address]`)
+  async openNewAddress(type: "shipping" | "billing") {
+    await this.page.click(`[data-testid=add_new_${type}_address]`)
   }
 
-  closeNewAddress(type: "shipping" | "billing") {
-    this.page.click(`[data-testid=close-${type}-form]`)
+  async closeNewAddress(type: "shipping" | "billing") {
+    await this.page.click(`[data-testid=close-${type}-form]`)
   }
 
   async checkBillingAddress(address: Partial<Address>) {
@@ -455,14 +505,16 @@ export class CheckoutPage {
     await this.checkAddress({ address, type: "shipping_address" })
   }
 
-  selectAddressOnBook({
+  async selectAddressOnBook({
     type,
     index = 0,
   }: {
     type: "billing" | "shipping"
     index: number
   }) {
-    this.page.click(`[data-testid=customer-${type}-address] >> nth=${index}`)
+    await this.page.click(
+      `[data-testid=customer-${type}-address] >> nth=${index}`
+    )
   }
 
   async checkSelectedAddressBook({
@@ -686,7 +738,7 @@ export class CheckoutPage {
     gateway = "klarna_pay_now",
     language,
   }: {
-    type: "adyen-dropin" | "klarna"
+    type: "adyen-dropin" | "klarna" | "stripe"
     gateway?:
       | "paypal"
       | "card"
@@ -694,7 +746,8 @@ export class CheckoutPage {
       | "klarna_pay_over_time"
       | "klarna_pay_later"
       | "klarna_pay_now"
-    language?: "fr" | "de"
+      | "klarna"
+    language?: "fr" | "de" | "us"
   }) {
     switch (type) {
       case "klarna": {
@@ -711,13 +764,88 @@ export class CheckoutPage {
 
         await newPage.locator("#otp_field__container input").fill("123456")
         // await newPage.getByTestId("kaf-button").click()
-        await newPage.getByTestId("select-payment-category").click()
-        await newPage.getByTestId("pick-plan").click()
+
+        const paymentCategory = newPage.getByTestId("select-payment-category")
+        if (await paymentCategory.isVisible()) {
+          paymentCategory.click()
+        }
+        const pickPlan = newPage.getByTestId("pick-plan")
+        if (await pickPlan.isVisible()) {
+          await pickPlan.click()
+        }
         await newPage.getByTestId("confirm-and-pay").click()
         await this.page
 
           .locator("text=Thank you for your order!")
-          .waitFor({ state: "visible", timeout: 60000 })
+          .waitFor({ state: "visible", timeout: 80000 })
+        break
+      }
+      case "stripe": {
+        const klarnaIframe = this.page // .frameLocator("#klarna-apf-iframe")
+
+        await klarnaIframe
+          .getByTestId("kaf-field")
+          .waitFor({ state: "visible" })
+
+        await klarnaIframe.getByTestId("kaf-field").focus()
+        await klarnaIframe.getByTestId("kaf-field").fill("+16466698197")
+
+        await klarnaIframe.getByTestId("kaf-button").click()
+        await klarnaIframe.locator("input#otp_field").focus()
+        await klarnaIframe.locator("input#otp_field").type("123456")
+        await this.page.waitForTimeout(5000)
+
+        const selectPayment = klarnaIframe.getByTestId(
+          "select-payment-category-or-method-from-stacked-selector"
+        )
+
+        if (await selectPayment.isVisible()) {
+          await selectPayment.click()
+        }
+
+        await this.page.waitForTimeout(1000)
+
+        if (await selectPayment.isVisible()) {
+          await selectPayment.click()
+        }
+
+        await this.page.waitForTimeout(4000)
+        const pickPlan = klarnaIframe.getByTestId("pick-plan")
+        if (await pickPlan.isVisible()) {
+          await pickPlan.click()
+        }
+        await this.page.waitForTimeout(4000)
+        if (await pickPlan.isVisible()) {
+          await pickPlan.click()
+        }
+        const confirmAndPay = klarnaIframe.getByTestId("confirm-and-pay")
+        if (await confirmAndPay.isVisible()) {
+          await confirmAndPay.click()
+        }
+        const button = klarnaIframe.getByRole("button", { name: "Continue" })
+        if (await button.isVisible()) {
+          button.click()
+        }
+
+        const pagePromise = await this.page
+          .waitForEvent("popup", { timeout: 5000 })
+          .then((pagePromise) => {
+            return pagePromise
+          })
+          .catch((error) => console.log(`no popup ${error}`))
+
+        if (pagePromise !== undefined) {
+          await pagePromise.getByText("Demo Bank").click()
+          await pagePromise.getByLabel("Kontonummer").click()
+          await pagePromise.getByLabel("Kontonummer").fill("12345678")
+          await pagePromise.getByLabel("PIN").click()
+          await pagePromise.getByLabel("PIN").fill("1234")
+          await pagePromise.waitForTimeout(2000)
+          await pagePromise.getByRole("button", { name: "Weiter" }).click()
+          await pagePromise.getByLabel("TAN").click()
+          await pagePromise.getByLabel("TAN").fill("12345")
+          await pagePromise.getByRole("button", { name: "Weiter" }).click()
+        }
         break
       }
       case "adyen-dropin": {
@@ -769,7 +897,7 @@ export class CheckoutPage {
               .click()
             await this.page.getByTestId("save-payment-button").click()
 
-            const klarnaIframe = this.page.frameLocator("#klarna-apf-iframe")
+            const klarnaIframe = this.page // .frameLocator("#klarna-apf-iframe")
 
             await klarnaIframe
               .getByTestId("kaf-field")
@@ -781,9 +909,35 @@ export class CheckoutPage {
             await klarnaIframe.getByTestId("kaf-button").click()
             await klarnaIframe.locator("input#otp_field").focus()
             await klarnaIframe.locator("input#otp_field").type("123456")
+            await this.page.waitForTimeout(5000)
+
+            const selectPayment = klarnaIframe.getByTestId(
+              "select-payment-category-or-method-from-stacked-selector"
+            )
+
+            if (await selectPayment.isVisible()) {
+              await selectPayment.click()
+            }
+
             await this.page.waitForTimeout(1000)
-            await klarnaIframe.getByTestId("pick-plan").click()
-            await klarnaIframe.getByTestId("confirm-and-pay").click()
+
+            if (await selectPayment.isVisible()) {
+              await selectPayment.click()
+            }
+
+            await this.page.waitForTimeout(4000)
+            const pickPlan = klarnaIframe.getByTestId("pick-plan")
+            if (await pickPlan.isVisible()) {
+              await pickPlan.click()
+            }
+            await this.page.waitForTimeout(4000)
+            if (await pickPlan.isVisible()) {
+              await pickPlan.click()
+            }
+            const confirmAndPay = klarnaIframe.getByTestId("confirm-and-pay")
+            if (await confirmAndPay.isVisible()) {
+              await confirmAndPay.click()
+            }
             const button = klarnaIframe.getByRole("button", { name: "Weiter" })
             if (await button.isVisible()) {
               button.click()
@@ -821,7 +975,7 @@ export class CheckoutPage {
             await this.page.click("[data-testid=save-payment-button]")
             await this.page.waitForTimeout(4000)
 
-            const klarnaIframe = this.page.frameLocator("#klarna-apf-iframe")
+            const klarnaIframe = this.page // .frameLocator("#klarna-apf-iframe")
 
             await klarnaIframe
               .getByTestId("kaf-field")
@@ -833,7 +987,15 @@ export class CheckoutPage {
             await klarnaIframe.getByTestId("kaf-button").click()
             await klarnaIframe.locator("input#otp_field").focus()
             await klarnaIframe.locator("input#otp_field").type("123456")
-            await this.page.waitForTimeout(1000)
+            await this.page.waitForTimeout(5000)
+
+            const selectPayment = klarnaIframe.getByTestId(
+              "select-payment-category-or-method-from-stacked-selector"
+            )
+
+            if (await selectPayment.isVisible()) {
+              await selectPayment.click()
+            }
 
             await klarnaIframe.getByTestId("confirm-and-pay").click()
 
@@ -851,9 +1013,9 @@ export class CheckoutPage {
               // await this.page.click("#buy-button")
 
               // const i = this.page.locator("#klarna-apf-iframe")
-              const klarnaIframe = this.page.frameLocator("#klarna-apf-iframe")
+              const klarnaIframe = this.page // .frameLocator("#klarna-apf-iframe")
 
-              await klarnaIframe
+              await this.page
                 .getByTestId("kaf-field")
                 .waitFor({ state: "visible" })
 
@@ -864,6 +1026,15 @@ export class CheckoutPage {
               await klarnaIframe.locator("input#otp_field").focus()
               await klarnaIframe.locator("input#otp_field").type("123456")
               await this.page.waitForTimeout(5000)
+
+              const selectPayment = klarnaIframe.getByTestId(
+                "select-payment-category-or-method-from-stacked-selector"
+              )
+
+              if (await selectPayment.isVisible()) {
+                await selectPayment.click()
+              }
+
               const confirm = klarnaIframe.locator(
                 "[data-testid=confirm-and-pay]"
               )
@@ -889,7 +1060,7 @@ export class CheckoutPage {
               await this.page.click("[data-testid=save-payment-button]")
               await this.page.waitForTimeout(5000)
 
-              const klarnaIframe = this.page.frameLocator("#klarna-apf-iframe")
+              const klarnaIframe = this.page // .frameLocator("#klarna-apf-iframe")
 
               await klarnaIframe
                 .getByTestId("kaf-field")
@@ -915,18 +1086,36 @@ export class CheckoutPage {
               //   .locator("input#addressCollector-date_of_birth")
               //   .type("22061978")
 
-              // await klarnaIframe.getByTestId("kaf-button").click()
-              // await this.page.waitForTimeout(2000)
-              await klarnaIframe.getByTestId("pick-plan").click()
-              await klarnaIframe
-                .locator("label")
-                .filter({
-                  hasText:
-                    "Ich habe die vorvertraglichen Informationen gelesen und bestätige, dass ich den Kreditvertrag abschließen möchte.",
-                })
-                .locator("div")
-                .nth(1)
-                .click()
+              const selectPayment = klarnaIframe.getByTestId(
+                "select-payment-category-or-method-from-stacked-selector"
+              )
+
+              await this.page.waitForTimeout(5000)
+
+              if (await selectPayment.isVisible()) {
+                await selectPayment.click()
+              }
+
+              await this.page.waitForTimeout(1000)
+
+              if (await selectPayment.isVisible()) {
+                await selectPayment.click()
+              }
+
+              await this.page.waitForTimeout(2000)
+
+              const pickPlan = klarnaIframe.getByTestId("pick-plan")
+              if (await pickPlan.isVisible()) {
+                await pickPlan.click()
+              }
+              // await klarnaIframe
+              //   .locator("label")
+              //   .filter({
+              //     hasText: "Indem du fortfährst, bestätigst du, dass du den",
+              //   })
+              //   .locator("div")
+              //   .nth(1)
+              //   .click()
               await klarnaIframe.getByTestId("confirm-and-pay").click()
 
               const iban = klarnaIframe.getByRole("textbox", {
@@ -1016,6 +1205,8 @@ export class CheckoutPage {
     type:
       | "stripe"
       | "stripe-paypal"
+      | "stripe-affirm"
+      | "stripe-klarna"
       | "braintree"
       | "paypal"
       | "adyen"
@@ -1042,7 +1233,7 @@ export class CheckoutPage {
           .getByPlaceholder("1234 1234 1234 1234")
           .fill(creditCard.number)
         await stripeFrame.getByPlaceholder("MM / YY").fill(creditCard.exp)
-        await stripeFrame.getByPlaceholder("CVC").fill(creditCard.cvc)
+        await stripeFrame.locator("#Field-cvcInput").fill(creditCard.cvc)
         break
       }
       case "stripe-paypal": {
@@ -1053,6 +1244,26 @@ export class CheckoutPage {
           .frameLocator("[data-testid=stripe_payments] iframe")
           .first()
         await stripeFrame.getByRole("button", { name: "PayPal" }).click()
+        break
+      }
+      case "stripe-affirm": {
+        await this.page.waitForTimeout(2000)
+        await this.page.mouse.wheel(0, 300)
+
+        const stripeFrame = this.page
+          .frameLocator("[data-testid=stripe_payments] iframe")
+          .first()
+        await stripeFrame.getByRole("button", { name: "Affirm" }).click()
+        break
+      }
+      case "stripe-klarna": {
+        await this.page.waitForTimeout(2000)
+        await this.page.mouse.wheel(0, 300)
+
+        const stripeFrame = this.page
+          .frameLocator("[data-testid=stripe_payments] iframe")
+          .first()
+        await stripeFrame.getByRole("button", { name: "Klarna" }).click()
         break
       }
       case "braintree": {
@@ -1161,6 +1372,7 @@ export class CheckoutPage {
     const buttonId = this.page.getByTestId(
       `save-${step.toLocaleLowerCase()}-button`
     )
+    await this.page.waitForTimeout(2000)
     await buttonId.focus()
     switch (step) {
       case "Customer":

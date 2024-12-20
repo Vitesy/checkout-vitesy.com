@@ -1,3 +1,5 @@
+import { jwtDecode, jwtIsSalesChannel } from "@commercelayer/js-auth"
+import { getConfig } from "@commercelayer/organization-config"
 import CommerceLayer, {
   CommerceLayerStatic,
   CommerceLayerClient,
@@ -5,7 +7,6 @@ import CommerceLayer, {
   Order,
 } from "@commercelayer/sdk"
 import retry from "async-retry"
-import { jwtDecode } from "jwt-decode"
 
 import { TypeAccepted } from "components/data/AppProvider/utils"
 import {
@@ -15,23 +16,10 @@ import {
 
 const RETRIES = 2
 
-interface JWTProps {
-  organization: {
-    slug: string
-    id: string
-  }
-  owner?: {
-    id: string
-  }
-  application: {
-    kind: string
-  }
-  test: boolean
-}
-
 interface FetchResource<T> {
   object: T | undefined
   success: boolean
+  bailed?: boolean
 }
 
 function isProduction(): boolean {
@@ -52,13 +40,18 @@ async function retryCall<T>(
       } catch (e: unknown) {
         if (CommerceLayerStatic.isApiError(e) && e.status === 401) {
           console.log("Not authorized")
-          bail(e)
-          return
+
+          return {
+            object: undefined,
+            success: false,
+            bailed: true,
+          }
         }
         if (number === RETRIES + 1) {
           return {
             object: undefined,
             success: false,
+            bailed: false,
           }
         }
         throw e
@@ -76,7 +69,7 @@ function getOrganization(
   return retryCall<Organization>(() =>
     cl.organization.retrieve({
       fields: {
-        organizations: [
+        organization: [
           "id",
           "logo_url",
           "name",
@@ -86,6 +79,7 @@ function getOrganization(
           "gtm_id_test",
           "support_email",
           "support_phone",
+          "config",
         ],
       },
     })
@@ -119,14 +113,25 @@ function getOrder(
 
 function getTokenInfo(accessToken: string) {
   try {
-    const {
-      organization: { slug },
-      application: { kind },
-      owner,
-      test,
-    } = jwtDecode(accessToken) as JWTProps
+    const { payload } = jwtDecode(accessToken)
 
-    return { slug, kind, isTest: test, isGuest: !owner }
+    if (jwtIsSalesChannel(payload)) {
+      const {
+        organization: { slug },
+        application: { kind },
+        owner,
+        test,
+      } = payload
+      return {
+        slug,
+        kind,
+        isTest: test,
+        isGuest: !owner,
+        marketId: payload.market?.id[0],
+      }
+    } else {
+      return {}
+    }
   } catch (e) {
     console.log(`error decoding access token: ${e}`)
     return {}
@@ -161,7 +166,7 @@ export const getSettings = async ({
     return invalidateCheckout()
   }
 
-  const { slug, kind, isTest, isGuest } = getTokenInfo(accessToken)
+  const { slug, kind, isTest, isGuest, marketId } = getTokenInfo(accessToken)
 
   if (!slug) {
     return invalidateCheckout()
@@ -188,14 +193,14 @@ export const getSettings = async ({
 
   if (!organizationResource?.success || !organization?.id) {
     console.log("Invalid: organization")
-    return invalidateCheckout(true)
+    return invalidateCheckout(!organizationResource?.bailed)
   }
 
   const order = orderResource?.object
 
   if (!orderResource?.success || !order?.id) {
     console.log("Invalid: order")
-    return invalidateCheckout(true)
+    return invalidateCheckout(!orderResource?.bailed)
   }
 
   const lineItemsShoppable = order.line_items?.filter((line_item) => {
@@ -240,7 +245,7 @@ export const getSettings = async ({
     isGuest: !!isGuest,
     domain,
     slug,
-    orderNumber: order.number || 0,
+    orderNumber: order.number || "",
     orderId: order.id,
     isShipmentRequired,
     validCheckout: true,
@@ -256,6 +261,15 @@ export const getSettings = async ({
     supportPhone: organization.support_phone,
     termsUrl: order.terms_url,
     privacyUrl: order.privacy_url,
+    config: getConfig({
+      jsonConfig: organization.config ?? {},
+      market: `market:id:${marketId}`,
+      params: {
+        lang: order.language_code,
+        orderId: order.id,
+        accessToken,
+      },
+    }),
   }
 
   return appSettings

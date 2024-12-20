@@ -7,6 +7,7 @@ import { ShippingToggleProps } from "components/composite/StepCustomer"
 import { AddressInputGroup } from "components/composite/StepCustomer/AddressInputGroup"
 import { AppContext } from "components/data/AppProvider"
 import setupAutocomplete from "components/utils/addressAutocomplete"
+import { useSettingsOrInvalid } from "components/hooks/useSettingsOrInvalid"
 
 interface Props {
   billingAddress: NullableType<Address>
@@ -18,8 +19,9 @@ export const BillingAddressFormNew: React.FC<Props> = ({
   openShippingAddress,
 }: Props) => {
   const appCtx = useContext(AppContext)
+  const { settings } = useSettingsOrInvalid()
 
-  if (!appCtx) {
+  if (!appCtx || !settings) {
     return null
   }
 
@@ -45,6 +47,10 @@ export const BillingAddressFormNew: React.FC<Props> = ({
   }, [])
 
   const { requiresBillingInfo } = appCtx
+
+  const countries = settings?.config?.checkout?.billing_countries
+  const states = settings?.config?.checkout?.billing_states
+  const defaultCountry = settings?.config?.checkout?.default_country
 
   return (
     <Wrapper>
@@ -105,6 +111,8 @@ export const BillingAddressFormNew: React.FC<Props> = ({
           fieldName="billing_address_country_code"
           resource="billing_address"
           type="text"
+          countries={countries}
+          defaultCountry={defaultCountry}
           openShippingAddress={openShippingAddress}
           value={autocompleteAddress?.country_code || ""}
         />
@@ -113,6 +121,7 @@ export const BillingAddressFormNew: React.FC<Props> = ({
         <AddressInputGroup
           fieldName="billing_address_state_code"
           resource="billing_address"
+          states={states}
           type="text"
           value={autocompleteAddress?.state_code || ""}
         />

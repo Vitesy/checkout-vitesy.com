@@ -5,6 +5,7 @@ import tw from "twin.macro"
 
 import { AddressInputGroup } from "components/composite/StepCustomer/AddressInputGroup"
 import setupAutocomplete from "components/utils/addressAutocomplete"
+import { useSettingsOrInvalid } from "components/hooks/useSettingsOrInvalid"
 
 interface Props {
   shippingAddress: NullableType<Address>
@@ -33,6 +34,15 @@ export const ShippingAddressFormNew: React.FC<Props> = ({
       }
     )
   }, [])
+  const { settings } = useSettingsOrInvalid()
+
+  if (!settings) {
+    return null
+  }
+
+  const countries = settings?.config?.checkout?.shipping_countries
+  const states = settings?.config?.checkout?.shipping_states
+  const defaultCountry = settings?.config?.checkout?.default_country
 
   return (
     <Fragment>
@@ -78,6 +88,8 @@ export const ShippingAddressFormNew: React.FC<Props> = ({
         <AddressInputGroup
           fieldName="shipping_address_country_code"
           resource="shipping_address"
+          countries={countries}
+          defaultCountry={defaultCountry}
           type="text"
           value={autocompleteAddress?.country_code || ""}
         />
@@ -87,6 +99,7 @@ export const ShippingAddressFormNew: React.FC<Props> = ({
         <AddressInputGroup
           fieldName="shipping_address_state_code"
           resource="shipping_address"
+          states={states}
           type="text"
           value={autocompleteAddress?.state_code || ""}
         />

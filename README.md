@@ -128,6 +128,67 @@ In the case of digital product purchases (i.e. SKUs with the `do_not_ship` flag 
 
 If the order has the attribute `shipping_country_code_lock` set, customers can select only the specified country code in the shipping address form. If they select a different country for the billing address, the shipping address section will open automatically with the country code already selected and disabled.
 
+#### Custom list of countries and states
+
+You can configure a custom list of countries and/or states for billing and shipping address forms, along with specifying a default country preselected at the organization level of the Provisioning API. This can be achieved by setting the `config` attribute as follows:
+
+```json
+{
+  "mfe": {
+    "default": {
+      "checkout": {
+        "default_country": "IT",
+        "billing_countries": [
+          {
+            "value": "ES",
+            "label": "Espana"
+          },
+          {
+            "value": "IT",
+            "label": "Italia"
+          },
+          {
+            "value": "US",
+            "label": "Unites States of America"
+          }
+        ],
+        "billing_states": {
+          "US": [
+            {
+              "value": "CA",
+              "label": "California"
+            },
+            {
+              "value": "TX",
+              "label": "Texas"
+            }
+          ],
+          "IT": [
+            {
+              "value": "FI",
+              "label": "Firenze"
+            },
+            {
+              "value": "PO",
+              "label": "Prato"
+            },
+            {
+              "value": "LI",
+              "label": "Livorno"
+            }
+          ]
+        }
+      }
+    }
+  }
+}
+```
+
+In the example above, the billing form will have just three countries, custom provinces/states for Italy and USA, and the default country preselected (set to Italy) for both billing and shipping forms.
+
+You can use `default_country`, `billing_countries`, `billing_states`, `shipping_countries` and `shipping_states` as keys. The option can also be customized per market in scope. You can read more about the organization config [here](https://docs.commercelayer.io/provisioning/api-reference/organizations#micro-frontends-configuration).
+
+
 ### Delivery step
 
 Here is where customers select a shipping method for each shipment of their order. [External shipping cost](https://docs.commercelayer.io/core/external-resources/external-shipping-costs) are partially supported by the Checkout application at the moment.
@@ -167,7 +228,7 @@ Here is where customers select a payment method and place the order.
 
 > When using PayPal via Adyen please make sure to properly [set up third-party access](https://docs.adyen.com/payment-methods/paypal/web-drop-in#grant-api-access) on your PayPal first.
 
-> Only `v68` of Adyen Payment API is supported by the Checkout application. Make sure that your Adyen payment gateway is configured properly on Commerce Layer.
+> Adyen Payments API supported by the Checkout application are from `v68` to `v71`. Make sure that your Adyen payment gateway is configured properly on Commerce Layer.
 
 #### Logged customers
 
@@ -185,9 +246,37 @@ In case the order balance is zero — e.g. the customer is paying with a gift ca
 
 If the `privacy_url` and `terms_url` attributes of the order are set an info paragraph will be displayed before the "Place order" button, including the related links and a checkbox to accept the terms. Customers won't be able to place the order unless they check it and agree.
 
+### Order subscription
+
+#### Recurring items
+
+When a line item includes a frequency, placing the order [creates an order subscription](https://docs.commercelayer.io/core/v/how-tos/placing-orders/subscriptions/generating-the-subscriptions). To activate the subscription, the payment source must be saved in the customer's wallet. Therefore, during checkout with a customer token, the payment source is automatically saved. However, if a guest is checking out, they will receive an alert indicating that the subscription will not renew successfully without a saved payment source.
+
+#### Target order 
+
+If a customer's payment source has expired or been deleted, or if the order initiating the subscription was placed as a guest, the resulting target order will be `pending`. Upon placement, the payment source will be automatically saved in the customer's wallet, and the order subscription will be automatically updated with the new payment source.
+
 ### Thank you page
 
 The page is displayed on successful order placement and features a recap of the order in terms of SKUs, bundles, billing/shipping addresses, and payment information. It is possible to show some support references (phone and email) by setting the `support_phone` and `support_email` attributes of the order. If the order's `return_url` attribute is set a link to continue shopping will be displayed on the page as well.
+
+#### Custom thank you page URL
+
+It is possible to provide a custom thank you page URL at the organization level of the Provisioning API by setting the `config` attribute, as follows:
+
+```json
+{
+  "mfe": {
+    "default": {
+      "checkout": {
+        "thankyou_page": "https://example.com/thanks/:lang/:order_id"
+      }
+    }
+  }
+}
+```
+
+You can use `:lang`, `:order_id` and `:access_token` as parameters that will be replaced with the values used by the Checkout. The option can also be customized per market in scope. You can read more about the organization config [here](https://docs.commercelayer.io/provisioning/api-reference/organizations#micro-frontends-configuration).
 
 ### Supported languages
 
@@ -196,6 +285,11 @@ The Checkout application language is set by the `language_code` attribute of the
 - English
 - Italian
 - German
+- Polish
+- Spanish
+- French
+- Hungarian
+- Portuguese
 
 > The fallback language is English.
 
@@ -239,11 +333,9 @@ pnpm dev
 
 ## Need help?
 
-1. Join [Commerce Layer's Slack community](https://slack.commercelayer.app).
-
-2. Create an [issue](https://github.com/commercelayer/mfe-checkout/issues) in this repository.
-
-3. Ping us [on Twitter](https://twitter.com/commercelayer).
+- Join [Commerce Layer's Discord community](https://discord.gg/commercelayer).
+- Ping us on [Bluesky](https://bsky.app/profile/commercelayer.io), [X (formerly Twitter)](https://x.com/commercelayer), or [LinkedIn](https://www.linkedin.com/company/commerce-layer).
+- Is there a bug? Create an [issue](https://github.com/commercelayer/mfe-checkout/issues) on this repository.
 
 ## License
 
