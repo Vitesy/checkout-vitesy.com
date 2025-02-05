@@ -107,7 +107,7 @@ export const StepComplete: React.FC<Props> = ({
                 {""}
               </WrapperButton>
             )}
-            <Card
+            {/* <Card
               rounded={true}
               className="my-4 text-left shadow-lg !p-7 bg-gradient-to-b from-green-100 to-white max-w-[550px]"
             >
@@ -138,14 +138,14 @@ export const StepComplete: React.FC<Props> = ({
               >
                 {t("stepComplete.referral.cta")}
               </a>
-              {/* <LinkButton
+              <LinkButton
                 data-testid={`referral-banner`}
                 label={t("stepComplete.referral.cta")}
                 onClick={() => {
                   window.open(t("stepComplete.referral.cta_url"), "_blank")
                 }}
-              /> */}
-            </Card>
+              />
+            </Card> */}
           </Main>
         </Wrapper>
       </Top>
