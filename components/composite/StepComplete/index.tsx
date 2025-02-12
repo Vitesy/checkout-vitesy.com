@@ -10,7 +10,7 @@ import { PaymentContainer } from "components/composite/StepPayment/PaymentContai
 import { AppContext } from "components/data/AppProvider"
 import { Base } from "components/ui/Base"
 import { Button } from "components/ui/Button"
-import { Card } from "components/ui/Card"
+// import { Card } from "components/ui/Card"
 import { CustomAddress } from "components/ui/CustomerAddressCard"
 import { FlexContainer } from "components/ui/FlexContainer"
 import { Footer } from "components/ui/Footer"
