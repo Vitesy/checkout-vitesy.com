@@ -24,13 +24,16 @@ export interface EcommerceProps {
   order_id?: NullableType<string>
   net_value?: NullableType<number>
   discount_value?: NullableType<number>
+  phone_number?: NullableType<string>
+  first_name?: NullableType<string>
+  surname?: NullableType<string>
 }
 
 export interface DataLayerProps {
   eventName:
-    | "begin_checkout"
-    | "add_shipping_info"
-    | "add_payment_info"
-    | "purchase"
+  | "begin_checkout"
+  | "add_shipping_info"
+  | "add_payment_info"
+  | "purchase"
   dataLayer: EcommerceProps
 }

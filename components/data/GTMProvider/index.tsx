@@ -181,10 +181,13 @@ export const GTMProvider: React.FC<GTMProviderProps> = ({
         net_value:
           order?.total_amount_with_taxes_float ||
           0 -
-            ((order?.total_tax_amount_float || 0) +
-              (order?.shipping_amount_float || 0)),
+          ((order?.total_tax_amount_float || 0) +
+            (order?.shipping_amount_float || 0)),
         discount_value: Math.abs(order?.discount_amount_float || 0),
         payment_type: paymentMethod?.name,
+        phone_number: order?.billing_address?.phone,
+        first_name: order?.billing_address?.first_name,
+        surname: order?.billing_address?.last_name,
       },
     })
   }
