@@ -212,7 +212,7 @@ const Checkout: React.FC<Props> = ({
                         },
                         stripe: {
                           redirectStatus,
-                          paymentIntentClientSecret: paymentIntentClientSecret,
+                          paymentIntentClientSecret,
                         },
                       }}
                     >

@@ -350,9 +350,9 @@ export function calculateSettings(
     ...(isShipmentRequired
       ? calculateSelectedShipments(prepareShipments(order.shipments))
       : {
-          hasShippingMethod: true,
-          shipments: [],
-        }),
+        hasShippingMethod: true,
+        shipments: [],
+      }),
     ...checkPaymentMethod(order),
     returnUrl: order.return_url,
     cartUrl: order.cart_url,
@@ -370,8 +370,8 @@ export function checkPaymentMethod(order: Order) {
 
   let hasPaymentMethod = Boolean(
     paymentSource?.metadata?.card ||
-      paymentSource?.options?.card ||
-      paymentSource?.payment_response?.source
+    paymentSource?.options?.card ||
+    paymentSource?.payment_response?.source
   )
 
   const paymentRequired = isPaymentRequired(order)
@@ -410,10 +410,10 @@ export function calculateSelectedShipments(
   const shipmentsSelected = shipments?.map((shipment) => {
     return shipment.shipmentId === payload?.shipmentId
       ? {
-          ...shipment,
-          shippingMethodId: payload.shippingMethod.id,
-          shippingMethodName: payload.shippingMethod.name,
-        }
+        ...shipment,
+        shippingMethodId: payload.shippingMethod.id,
+        shippingMethodName: payload.shippingMethod.name,
+      }
       : shipment
   })
   const hasShippingMethod = hasShippingMethodSet(shipmentsSelected)
